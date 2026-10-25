@@ -279,6 +279,16 @@ hl.device({
     sensitivity = -0.5,
 })
 
+-- Game streaming: Sunshine's virtual touchscreen and pen act on the STREAM output only
+hl.device({
+    name   = "libvirtualhid-touchscreen",
+    output = "STREAM",
+})
+hl.device({
+    name   = "libvirtualhid-pen-tablet",
+    output = "STREAM",
+})
+
 
 ---------------------
 ---- KEYBINDINGS ----

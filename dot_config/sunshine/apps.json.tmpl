@@ -1,0 +1,18 @@
+{
+  "env": {},
+  "apps": [
+    {
+      "name": "Steam Big Picture",
+      "image-path": "steam.png",
+      "prep-cmd": [
+        {
+          "do": "{{ .chezmoi.homeDir }}/.local/bin/bastion-stream prep",
+          "undo": "{{ .chezmoi.homeDir }}/.local/bin/bastion-stream undo"
+        }
+      ],
+      "auto-detach": false,
+      "wait-all": true,
+      "exit-timeout": 5
+    }
+  ]
+}

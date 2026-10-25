@@ -193,4 +193,21 @@ check "service follows the Sunshine journal" 'grep -q "journalctl --user -fu app
 check "service starts with the session" 'grep -qx "WantedBy=graphical-session.target" $unit'
 check "service restarts if it dies" 'grep -qx "Restart=always" $unit'
 
+# --- Sunshine config ----------------------------------------------------------
+conf=dot_config/sunshine/sunshine.conf
+check "conf captures STREAM with wlr" 'grep -qx "capture = wlr" $conf && grep -qx "output_name = STREAM" $conf'
+check "conf encodes with vaapi on the 9070" 'grep -qx "encoder = vaapi" $conf && grep -qx "adapter_name = /dev/dri/renderD128" $conf'
+check "web UI stays local" 'grep -qx "origin_web_ui_allowed = lan" $conf'
+apps=$(chezmoi execute-template < dot_config/sunshine/apps.json.tmpl 2>/dev/null)
+check "one app named Steam Big Picture" '[ "$(jq -r ".apps | length" <<<"$apps")" = 1 ] && [ "$(jq -r ".apps[0].name" <<<"$apps")" = "Steam Big Picture" ]'
+check "app preps and undoes with bastion-stream by absolute path" '[ "$(jq -r ".apps[0][\"prep-cmd\"][0].do" <<<"$apps")" = "$HOME/.local/bin/bastion-stream prep" ] && [ "$(jq -r ".apps[0][\"prep-cmd\"][0].undo" <<<"$apps")" = "$HOME/.local/bin/bastion-stream undo" ]'
+check "app has no command and nothing detached" '[ "$(jq -r ".apps[0].cmd // \"\"" <<<"$apps")" = "" ] && [ "$(jq -r ".apps[0].detached // [] | length" <<<"$apps")" = 0 ] && [ "$(jq -r ".apps[0][\"auto-detach\"]" <<<"$apps")" = false ]'
+check "secrets are not managed" '! chezmoi managed 2>/dev/null | grep -E "sunshine_state|api-creds|credentials"'
+check "sunshine and the watchdog start with the session" '[ "$(cat dot_config/systemd/user/graphical-session.target.wants/symlink_app-dev.lizardbyte.app.Sunshine.service)" = /usr/lib/systemd/user/app-dev.lizardbyte.app.Sunshine.service ] && [ "$(cat dot_config/systemd/user/graphical-session.target.wants/symlink_bastion-stream-watchdog.service)" = ../bastion-stream-watchdog.service ]'
+hl=dot_config/hypr/hyprland.lua
+check "touch goes to STREAM" 'grep -A2 "name *= *\"libvirtualhid-touchscreen\"" $hl | grep -q "output *= *\"STREAM\"" && grep -A2 "name *= *\"libvirtualhid-pen-tablet\"" $hl | grep -q "output *= *\"STREAM\""'
+check "hyprland config parses" 'luac -p $hl'
+check "a restarted sunshine first clears a stale session" 'grep -qx "ExecStartPre=%h/.local/bin/bastion-stream undo" dot_config/systemd/user/app-dev.lizardbyte.app.Sunshine.service.d/bastion-stream.conf'
+check "host verify script exists" '[ -x tests/verify-stream-host.sh ]'
+
 exit $failed
