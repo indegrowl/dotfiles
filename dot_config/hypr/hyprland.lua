@@ -28,7 +28,7 @@ hl.monitor({
 ---------------------
 
 -- Set programs that you use
-local terminal    = "command -v foot >/dev/null && foot || kitty" -- foot, kitty until foot is installed
+local terminal    = "foot"
 local fileManager = "dolphin"
 local menu        = "wofi --show drun"
 

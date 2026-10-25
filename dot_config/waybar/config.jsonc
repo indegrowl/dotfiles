@@ -30,7 +30,7 @@
     "cpu": {
         "interval": 5,
         "format": "󰍛 {usage}%",
-        "on-click": "command -v foot >/dev/null && foot -e btop || kitty btop"
+        "on-click": "foot -e btop"
     },
     "memory": {
         "interval": 5,
@@ -50,7 +50,8 @@
         "format-muted": "󰝟",
         "format-icons": { "default": ["", "", ""] },
         "tooltip-format": "{volume}%",
-        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "on-click": "pavucontrol",
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
         "scroll-step": 5
     }
 }
