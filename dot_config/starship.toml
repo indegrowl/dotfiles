@@ -135,7 +135,7 @@ commands = [
 
 [character]
 format = "$symbol "
-success_symbol = "[❯](bold peach)"
+success_symbol = "[❯](bold lavender)"
 error_symbol = "[❯](bold red)"
 vimcmd_symbol = "[❮](bold green)"
 vimcmd_visual_symbol = "[❮](bold yellow)"
@@ -288,7 +288,7 @@ fish_style_pwd_dir_length = 0
 use_logical_path = true
 format = "[$path]($style)[$read_only]($read_only_style) "
 repo_root_format = "[$before_root_path]($before_repo_root_style)[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) "
-style = "bold peach"
+style = "bold lavender"
 disabled = false
 read_only = "🔒"
 read_only_style = "red"

@@ -1,4 +1,3 @@
-// Omarchy-inspired waybar for Hyprland. Styling lives in style.css.
 {
     "layer": "top",
     "position": "top",
@@ -6,7 +5,7 @@
     "spacing": 0,
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["clock"],
-    "modules-right": ["tray", "cpu", "memory", "network", "pulseaudio"],
+    "modules-right": ["network", "bluetooth", "pulseaudio"],
 
     "hyprland/workspaces": {
         "on-click": "activate",
@@ -23,19 +22,6 @@
         "format-alt": "{:%d %B W%V %Y}",
         "tooltip": false
     },
-    "tray": {
-        "icon-size": 14,
-        "spacing": 12
-    },
-    "cpu": {
-        "interval": 5,
-        "format": "󰍛 {usage}%",
-        "on-click": "foot -e btop"
-    },
-    "memory": {
-        "interval": 5,
-        "format": " {percentage}%"
-    },
     "network": {
         "format-wifi": "{icon}",
         "format-ethernet": "󰀂",
@@ -43,12 +29,23 @@
         "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
         "tooltip-format-wifi": "{essid} ({signalStrength}%)",
         "tooltip-format-ethernet": "{ifname}",
+        "on-click": "foot -e nmtui",
         "interval": 5
+    },
+    "bluetooth": {
+        "format": "󰂯",
+        "format-disabled": "󰂲",
+        "format-off": "󰂲",
+        "format-connected": "󰂱",
+        "tooltip-format": "{controller_alias}",
+        "tooltip-format-connected": "{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}",
+        "on-click": "blueman-manager"
     },
     "pulseaudio": {
         "format": "{icon}",
         "format-muted": "󰝟",
-        "format-icons": { "default": ["", "", ""] },
+        "format-icons": { "default": ["󰕿", "󰖀", "󰕾"] },
         "tooltip-format": "{volume}%",
         "on-click": "pavucontrol",
         "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",

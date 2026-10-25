@@ -2,26 +2,23 @@
 # Load settings changed via :set / the UI (autoconfig.yml)
 config.load_autoconfig()
 
-# Catppuccin Mocha, Peach accent
 p = {
-    "rosewater": "#f5e0dc", "red": "#f38ba8", "peach": "#fab387",
+    "rosewater": "#f5e0dc", "lavender": "#b4befe", "red": "#f38ba8", "peach": "#fab387",
     "yellow": "#f9e2af", "green": "#a6e3a1", "blue": "#89b4fa",
     "text": "#cdd6f4", "subtext0": "#a6adc8", "overlay0": "#6c7086",
     "surface1": "#45475a", "surface0": "#313244",
     "base": "#1e1e2e", "mantle": "#181825", "crust": "#11111b",
 }
-accent = p["peach"]
+accent = p["lavender"]
 
 c.fonts.default_family = "CaskaydiaCove Nerd Font"
 c.fonts.default_size = "10pt"
 
-# Web pages
 c.colors.webpage.bg = p["base"]
 c.colors.webpage.preferred_color_scheme = "dark"
 c.colors.webpage.darkmode.enabled = True
 c.colors.webpage.darkmode.policy.images = "never"
 
-# Completion
 c.colors.completion.fg = p["subtext0"]
 c.colors.completion.odd.bg = p["mantle"]
 c.colors.completion.even.bg = p["mantle"]
@@ -38,7 +35,6 @@ c.colors.completion.match.fg = accent
 c.colors.completion.scrollbar.fg = p["surface1"]
 c.colors.completion.scrollbar.bg = p["crust"]
 
-# Context menu
 c.colors.contextmenu.menu.bg = p["base"]
 c.colors.contextmenu.menu.fg = p["text"]
 c.colors.contextmenu.selected.bg = p["surface1"]
@@ -46,7 +42,6 @@ c.colors.contextmenu.selected.fg = p["text"]
 c.colors.contextmenu.disabled.bg = p["mantle"]
 c.colors.contextmenu.disabled.fg = p["overlay0"]
 
-# Downloads
 c.colors.downloads.bar.bg = p["base"]
 c.colors.downloads.start.bg = p["blue"]
 c.colors.downloads.start.fg = p["base"]
@@ -55,7 +50,6 @@ c.colors.downloads.stop.fg = p["base"]
 c.colors.downloads.error.bg = p["base"]
 c.colors.downloads.error.fg = p["red"]
 
-# Hints
 c.colors.hints.bg = accent
 c.colors.hints.fg = p["crust"]
 c.colors.hints.match.fg = p["subtext0"]
@@ -65,7 +59,6 @@ c.colors.keyhint.bg = p["mantle"]
 c.colors.keyhint.fg = p["text"]
 c.colors.keyhint.suffix.fg = accent
 
-# Messages
 c.colors.messages.error.bg = p["base"]
 c.colors.messages.error.fg = p["red"]
 c.colors.messages.error.border = p["red"]
@@ -76,7 +69,6 @@ c.colors.messages.info.bg = p["base"]
 c.colors.messages.info.fg = p["text"]
 c.colors.messages.info.border = p["surface1"]
 
-# Prompts
 c.colors.prompts.bg = p["mantle"]
 c.colors.prompts.fg = p["text"]
 c.colors.prompts.border = "1px solid " + accent
@@ -84,7 +76,6 @@ c.colors.prompts.selected.bg = p["surface1"]
 c.colors.prompts.selected.fg = p["text"]
 c.prompt.radius = 0
 
-# Statusbar
 c.colors.statusbar.normal.bg = p["base"]
 c.colors.statusbar.normal.fg = p["text"]
 c.colors.statusbar.insert.bg = p["crust"]
@@ -109,7 +100,6 @@ c.colors.statusbar.url.success.https.fg = p["green"]
 c.colors.statusbar.url.warn.fg = p["yellow"]
 c.colors.statusbar.url.error.fg = p["red"]
 
-# Tabs: square, flat
 c.colors.tabs.bar.bg = p["crust"]
 c.colors.tabs.odd.bg = p["mantle"]
 c.colors.tabs.even.bg = p["mantle"]

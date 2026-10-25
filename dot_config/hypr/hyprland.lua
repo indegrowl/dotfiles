@@ -98,8 +98,8 @@ hl.config({
         border_size = 2,
 
         col = {
-            active_border   = "rgba(fab387ff)", -- catppuccin mocha peach
-            inactive_border = "rgba(45475aaa)", -- surface1
+            active_border   = "rgba(b4befeff)",
+            inactive_border = "rgba(45475aaa)",
         },
 
         -- Set to true to enable resizing windows by clicking and dragging on borders and gaps
