@@ -1,1 +1,17 @@
-# mako config. Empty = built-in defaults. See: man 5 mako
+# Catppuccin Mocha, Peach accent. See: man 5 mako
+font=CaskaydiaCove Nerd Font 11
+background-color=#1e1e2e
+text-color=#cdd6f4
+border-color=#fab387
+progress-color=over #313244
+border-size=2
+border-radius=0
+padding=12
+margin=10
+width=360
+default-timeout=5000
+max-icon-size=32
+
+[urgency=high]
+border-color=#f38ba8
+default-timeout=0

@@ -1,1 +1,11 @@
-# wofi config. Empty = built-in defaults. See: man 5 wofi
+# wofi config. Styling lives in style.css. See: man 5 wofi
+show=drun
+width=600
+height=360
+location=center
+prompt=
+allow_images=true
+image_size=24
+insensitive=true
+no_actions=true
+hide_scroll=true

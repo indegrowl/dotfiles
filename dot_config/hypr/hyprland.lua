@@ -28,9 +28,9 @@ hl.monitor({
 ---------------------
 
 -- Set programs that you use
-local terminal    = "kitty"
+local terminal    = "command -v foot >/dev/null && foot || kitty" -- foot, kitty until foot is installed
 local fileManager = "dolphin"
-local menu        = "hyprlauncher"
+local menu        = "wofi --show drun"
 
 
 -------------------
@@ -93,13 +93,13 @@ hl.env("HYPRCURSOR_SIZE", "24")
 hl.config({
     general = {
         gaps_in  = 5,
-        gaps_out = 20,
+        gaps_out = 10,
 
         border_size = 2,
 
         col = {
-            active_border   = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 },
-            inactive_border = "rgba(595959aa)",
+            active_border   = "rgba(fab387ff)", -- catppuccin mocha peach
+            inactive_border = "rgba(45475aaa)", -- surface1
         },
 
         -- Set to true to enable resizing windows by clicking and dragging on borders and gaps
@@ -112,7 +112,7 @@ hl.config({
     },
 
     decoration = {
-        rounding       = 10,
+        rounding       = 0,
         rounding_power = 2,
 
         -- Change transparency of focused and unfocused windows
@@ -123,7 +123,7 @@ hl.config({
             enabled      = true,
             range        = 4,
             render_power = 3,
-            color        = 0xee1a1a1a,
+            color        = 0xee11111b,
         },
 
         blur = {
@@ -212,8 +212,8 @@ hl.config({
 
 hl.config({
     misc = {
-        force_default_wallpaper = -1,    -- Set to 0 or 1 to disable the anime mascot wallpapers
-        disable_hyprland_logo   = false, -- If true disables the random hyprland logo / anime girl background. :(
+        force_default_wallpaper = 0,     -- Set to 0 or 1 to disable the anime mascot wallpapers
+        disable_hyprland_logo   = true,  -- If true disables the random hyprland logo / anime girl background. :(
     },
 })
 
