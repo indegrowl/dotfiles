@@ -1,0 +1,11 @@
+[Unit]
+Description=Close a Sunshine stream whose client has been gone for 15 minutes
+After=app-dev.lizardbyte.app.Sunshine.service
+
+[Service]
+ExecStart=/bin/sh -c 'journalctl --user -fu app-dev.lizardbyte.app.Sunshine -o cat -n 0 | %h/.local/bin/bastion-stream watchdog'
+Restart=always
+RestartSec=5s
+
+[Install]
+WantedBy=graphical-session.target

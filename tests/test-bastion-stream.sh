@@ -138,4 +138,59 @@ prep >/dev/null
 check "stale session without gamescope is rebuilt" 'calls | grep -q "gamescope -e" && [ -e "$world/stream" ]'
 teardown
 
+# --- watchdog ---------------------------------------------------------------
+wd_setup() {
+    setup
+    touch "$tmp/state/session"
+    close_app() { echo close >> "$tmp/calls"; }
+    closes() { grep -c '^close$' "$tmp/calls"; }
+}
+
+wd_setup
+on_line "[2026-10-25 18:30:10.000]: Info: CLIENT DISCONNECTED" 0
+tick 899
+check "no close before the grace ends" '[ "$(closes)" = 0 ]'
+tick 900
+check "disconnect then 900 s closes the app" '[ "$(closes)" = 1 ]'
+tick 960
+check "closes once" '[ "$(closes)" = 1 ]'
+teardown
+
+wd_setup
+on_line "Info: CLIENT DISCONNECTED" 0
+on_line "Info: CLIENT CONNECTED" 300
+tick 2000
+check "reconnect inside grace cancels teardown" '[ "$(closes)" = 0 ]'
+teardown
+
+wd_setup
+rm "$tmp/state/session"
+on_line "Info: CLIENT DISCONNECTED" 0
+tick 5000
+check "no session means no close" '[ "$(closes)" = 0 ]'
+teardown
+
+wd_setup
+on_line "Info: New streaming session started [active sessions: 1]" 0
+on_line "Info: Executing Undo Cmd: [x]" 0
+on_line "Info: [wlgrab] Selected monitor [] for streaming" 0
+tick 5000
+check "unrelated lines are ignored" '[ "$(closes)" = 0 ]'
+teardown
+
+wd_setup
+BASTION_STREAM_GRACE=60
+on_line "Info: CLIENT DISCONNECTED" 100
+tick 159
+check "grace is configurable" '[ "$(closes)" = 0 ]'
+tick 160
+check "configured grace closes" '[ "$(closes)" = 1 ]'
+unset BASTION_STREAM_GRACE
+teardown
+
+unit=dot_config/systemd/user/bastion-stream-watchdog.service
+check "service follows the Sunshine journal" 'grep -q "journalctl --user -fu app-dev.lizardbyte.app.Sunshine -o cat -n 0" $unit && grep -q "bastion-stream watchdog" $unit'
+check "service starts with the session" 'grep -qx "WantedBy=graphical-session.target" $unit'
+check "service restarts if it dies" 'grep -qx "Restart=always" $unit'
+
 exit $failed

@@ -4,6 +4,9 @@
 # the desktop and its monitors stay untouched.
 #   bastion-stream prep      swap the silent desktop Steam for gamescope on STREAM
 #   bastion-stream undo      put everything back (idempotent)
+#   bastion-stream watchdog  read Sunshine's journal on stdin; if the client stays
+#                            away for BASTION_STREAM_GRACE s (900), close the app so
+#                            Sunshine runs undo
 # Sourcing with BASTION_STREAM_LIB=1 only defines the functions (tests).
 set -u
 
@@ -12,6 +15,8 @@ STEAM_TIMEOUT=${BASTION_STREAM_STEAM_TIMEOUT:-30}
 OUTPUT=STREAM
 GAMESCOPE_UNIT=bastion-stream-gamescope
 INHIBIT_UNIT=bastion-stream-inhibit
+API_CREDS=${BASTION_STREAM_API_CREDS:-$HOME/.config/bastion-stream/api-creds}
+DEADLINE=
 
 _hyprctl() { hyprctl "$@"; }
 _steam() { steam "$@" >/dev/null 2>&1; }
@@ -129,9 +134,46 @@ undo() {
     return 0
 }
 
+# A dropped client leaves the app running (Sunshine resumes it on reconnect) and
+# never runs undo; only a quit or this close does.
+close_app() {
+    curl -sk -u "$(cat "$API_CREDS")" -X POST https://localhost:47990/api/apps/close >/dev/null
+}
+
+# on_line <journal line> [now]: arm the teardown deadline on a disconnect, disarm
+# it on a (re)connect.
+on_line() {
+    case "$1" in
+        *"CLIENT DISCONNECTED"*) DEADLINE=$(( ${2:-$(date +%s)} + ${BASTION_STREAM_GRACE:-900} )) ;;
+        *"CLIENT CONNECTED"*) DEADLINE= ;;
+    esac
+}
+
+# tick <now>: close the app once the deadline has passed, if a session is live.
+tick() {
+    [ -n "$DEADLINE" ] && [ "$1" -ge "$DEADLINE" ] || return 0
+    DEADLINE=
+    [ -e "$STATE/session" ] || return 0
+    echo "bastion-stream: client gone for ${BASTION_STREAM_GRACE:-900}s, closing the app"
+    close_app
+}
+
+watchdog() {
+    local line rc
+    while :; do
+        if IFS= read -r -t 30 line; then
+            on_line "$line"
+        else
+            rc=$?
+            [ "$rc" -gt 128 ] || return 0 # EOF: journalctl went away
+        fi
+        tick "$(date +%s)"
+    done
+}
+
 [ -n "${BASTION_STREAM_LIB:-}" ] && return 0
 
 case "${1:-}" in
-    prep | undo) "$1" ;;
-    *) echo "usage: bastion-stream prep|undo" >&2; exit 2 ;;
+    prep | undo | watchdog) "$1" ;;
+    *) echo "usage: bastion-stream prep|undo|watchdog" >&2; exit 2 ;;
 esac
