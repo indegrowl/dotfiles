@@ -29,7 +29,7 @@
         "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
         "tooltip-format-wifi": "{essid} ({signalStrength}%)",
         "tooltip-format-ethernet": "{ifname}",
-        "on-click": "foot -e nmtui",
+        "on-click": "foot --app-id=TUI.float -e nmtui",
         "interval": 5
     },
     "bluetooth": {
@@ -40,14 +40,14 @@
         "tooltip-format": "{controller_alias}",
         "tooltip-format-connected": "{device_enumerate}",
         "tooltip-format-enumerate-connected": "{device_alias}",
-        "on-click": "blueman-manager"
+        "on-click": "foot --app-id=TUI.float -e bluetui"
     },
     "pulseaudio": {
         "format": "{icon}",
         "format-muted": "󰝟",
         "format-icons": { "default": ["󰕿", "󰖀", "󰕾"] },
         "tooltip-format": "{volume}%",
-        "on-click": "pavucontrol",
+        "on-click": "foot --app-id=TUI.float -e wiremix",
         "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
         "scroll-step": 5
     }

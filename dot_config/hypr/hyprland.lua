@@ -64,6 +64,11 @@ end)
 
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
+local localBin = os.getenv("HOME") .. "/.local/bin"
+if not (":" .. os.getenv("PATH") .. ":"):find(":" .. localBin .. ":", 1, true) then
+    hl.env("PATH", localBin .. ":" .. os.getenv("PATH"))
+end
+hl.env("NEWT_COLORS", "root=lightgray,default window=lightgray,default border=blue,default title=blue,default textbox=lightgray,default label=lightgray,default button=black,blue actbutton=black,blue compactbutton=lightgray,default listbox=lightgray,default actlistbox=black,blue sellistbox=blue,default actsellistbox=black,blue entry=lightgray,black disentry=gray,default checkbox=lightgray,default actcheckbox=black,blue emptyscale=,black fullscale=,blue helpline=lightgray,default roottext=lightgray,default shadow=default")
 
 
 -----------------------
@@ -360,4 +365,12 @@ hl.window_rule({
 
     move  = "20 monitor_h-120",
     float = true,
+})
+
+hl.window_rule({
+    name   = "float-tui",
+    match  = { class = "^TUI\\.float$" },
+    float  = true,
+    size   = "875 600",
+    center = true,
 })
