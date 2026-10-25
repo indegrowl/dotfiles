@@ -1,0 +1,199 @@
+# The core_window key bindings are usable in any app component.
+[core_window]
+keymap = [
+  # Quit the application, example of multiple keys
+  # { keys = ["w", "w"], command = "quit", description = "Quit the application"},
+
+  # Quit the application
+  # Note: To allow typing "q" in the prompt, override this binding in the [prompt] section.
+  # If not overridden, "q" will trigger quit even when typing in the prompt.
+  { keys = ["q"], command = "try_quit", description = "Quit the application"},
+  # Quit the application
+  { keys = ["ctrl+c"], command = "try_quit", description = "Quit the application"},
+  # Focus the chat list
+  { keys = ["alt+1"], command = "focus_chat_list", description = "Focus the chat list"},
+  { keys = ["alt+left"], command = "focus_chat_list", description = "Focus the chat list"},
+  # Focus the chat
+  { keys = ["alt+2"], command = "focus_chat", description = "Focus the chat"},
+  { keys = ["alt+right"], command = "focus_chat", description = "Focus the chat"},
+  # Focus the prompt
+  { keys = ["alt+3"], command = "focus_prompt", description = "Focus the prompt"},
+  { keys = ["alt+down"], command = "focus_prompt", description = "Focus the prompt"},
+  # Unfocus the current component
+  { keys = ["esc"], command = "unfocus_component", description = "Unfocus the current component"},
+  { keys = ["alt+up"], command = "unfocus_component", description = "Unfocus the current component"},
+  # Toggle chat_list visibility
+  { keys = ["alt+n"], command = "toggle_chat_list", description = "Toggle chat_list visibility"},
+  # Increase the chat list size
+  { keys = ["alt+l"], command = "increase_chat_list_size", description = "Increase the chat list size"},
+  # Decrease the chat list size
+  { keys = ["alt+h"], command = "decrease_chat_list_size", description = "Decrease the chat list size"},
+  # Increase the prompt size
+  { keys = ["alt+k"], command = "increase_prompt_size", description = "Increase the prompt size"},
+  # Decrease the prompt size
+  { keys = ["alt+j"], command = "decrease_prompt_size", description = "Decrease the prompt size"},
+  # Start chat list search (when nothing is selected)
+  { keys = ["alt+r"], command = "chat_list_search", description = "Start searching chats"},
+  # Show command guide with keybindings
+  { keys = ["alt+f1"], command = "show_command_guide", description = "Show command guide with all keybindings"},
+  # Show theme selector
+  { keys = ["alt+t"], command = "show_theme_selector", description = "Show theme selector"},
+
+  # Upload file (opens the file explorer popup)
+  { keys = ["alt+u"], command = "show_file_upload_explorer", description = "Upload file"},
+]
+
+# The chat_list key bindings are only usable in the chat list component.
+# When the chat list is focused, core_window bindings apply too (e.g. Alt+1/2/3, Esc).
+# Only list bindings specific to the chat list here.
+[chat_list]
+keymap = [
+  { keys = ["j"], command = "chat_list_next", description = "Select the next chat"},
+  { keys = ["k"], command = "chat_list_previous", description = "Select the previous chat"},
+  { keys = ["l"], command = "chat_list_open", description = "Open the selected chat"},
+  { keys = ["i"], command = "focus_prompt", description = "Focus the prompt"},
+  { keys = ["/"], command = "chat_list_search", description = "Search chats"},
+  # Select the next chat
+  { keys = ["down"], command = "chat_list_next", description = "Select the next chat"},
+  # Select the previous chat
+  { keys = ["up"], command = "chat_list_previous", description = "Select the previous chat"},
+  # Unselect the current chat
+  { keys = ["left"], command = "chat_list_unselect", description = "Unselect the current chat"},
+  # Open the selected chat
+  { keys = ["right"], command = "chat_list_open", description = "Open the selected chat"},
+  # Open the selected chat
+  { keys = ["enter"], command = "chat_list_open", description = "Open the selected chat"},
+  # Move focus to the prompt and set its state to receive a string used to order the entries in the chat list window.
+  { keys = ["alt+r"], command = "chat_list_search", description = "Focus on prompt to start searching"},
+  # Restore the default sorting in the chat list window.
+  { keys = ["alt+c"], command = "chat_list_restore_sort", description = "Restore the default ordering of the chat list"},
+  # Open pinned messages for the current chat (no-op if none pinned).
+  { keys = ["shift+back_tab"], command = "show_pinned_messages_popup", description = "Open pinned messages for the open chat"},
+  { keys = ["back_tab"], command = "show_pinned_messages_popup", description = "Open pinned messages for the open chat"},
+]
+
+# The chat key bindings are only usable in the chat component.
+# When the chat is focused, core_window bindings apply too. Only list chat-specific bindings here.
+[chat]
+keymap = [
+  { keys = ["k"], command = "chat_window_next", description = "Select the previous message (up)"},
+  { keys = ["j"], command = "chat_window_previous", description = "Select the next message (down)"},
+  { keys = ["h"], command = "focus_chat_list", description = "Focus the chat list"},
+  { keys = ["i"], command = "focus_prompt", description = "Focus the prompt"},
+  { keys = ["/"], command = "chat_window_search", description = "Search messages"},
+  # Select the next message (older, toward top of list)
+  { keys = ["up"], command = "chat_window_next", description = "Select the previous message (up)"},
+  # Select the previous message (newer, toward bottom of list)
+  { keys = ["down"], command = "chat_window_previous", description = "Select the next message (down)"},
+  # Unselect the current message
+  { keys = ["left"], command = "chat_window_unselect", description = "Unselect the current message"},
+  # Delete the selected message for all users
+  { keys = ["d"], command = "chat_window_delete_for_everyone", description = "Delete the selected message for all users"},
+  # Delete the selected message for "me"
+  { keys = ["D"], command = "chat_window_delete_for_me", description = "Delete the selected message for 'me'"},
+  # Copy the selected message
+  { keys = ["y"], command = "chat_window_copy", description = "Copy the selected message"},
+  # Copy the selected message (overrides core_window try_quit when chat focused)
+  { keys = ["ctrl+c"], command = "chat_window_copy", description = "Copy the selected message"},
+  # Edit the selected message
+  { keys = ["e"], command = "chat_window_edit", description = "Edit the selected message"},
+  # Reply to the selected message
+  { keys = ["r"], command = "chat_window_reply", description = "Reply to the selected message"},
+  # View photo message
+  { keys = ["alt+v"], command = "view_photo_message", description = "View photo from selected message"},
+  # Play or stop voice/audio message (selected message must be voice note or audio file)
+  { keys = ["alt+p"], command = "play_voice_message", description = "Play or stop voice/audio from selected message"},
+  # Save photo or document attachment to disk (opens save-as popup)
+  { keys = ["alt+s"], command = "start_file_download", description = "Save photo or document to disk"},
+  # Move focus to the prompt and set its state to search messages in the chat window.
+  { keys = ["alt+r"], command = "chat_window_search", description = "Focus on prompt to start searching messages"},
+  # Restore the default message ordering in the chat window.
+  { keys = ["alt+c"], command = "chat_window_restore_sort", description = "Restore the default ordering of messages"},
+  # Open pinned messages popup (when the chat has pinned messages).
+  { keys = ["shift+back_tab"], command = "show_pinned_messages_popup", description = "Open pinned messages browser"},
+  { keys = ["back_tab"], command = "show_pinned_messages_popup", description = "Open pinned messages browser"},
+]
+
+# The prompt key bindings are only usable in the prompt component.
+# When the prompt is focused, core_window bindings apply too (e.g. Alt+1/2/3, Esc).
+# Only list prompt-specific bindings here.
+[prompt]
+keymap = [
+  # Copy the selected text (overrides core_window try_quit when prompt focused)
+  { keys = ["ctrl+c"], command = "prompt_copy", description = "Copy the selected text"},
+  # Focus chat list / chat (so Alt+arrows work even if keymap lookup fails, e.g. terminal escape)
+  { keys = ["alt+left"], command = "focus_chat_list", description = "Focus the chat list"},
+  { keys = ["alt+right"], command = "focus_chat", description = "Focus the chat"},
+  # Open message search overlay (same as Alt+R in chat section)
+  { keys = ["alt+r"], command = "chat_window_search", description = "Open message search overlay"},
+]
+
+# The command_guide key bindings are only usable when the command guide popup is focused.
+# When the command guide is focused, core_window bindings apply too (e.g. Alt+1/2/3).
+# Only list command guide-specific bindings here.
+[command_guide]
+keymap = [
+  # Close the command guide popup
+  { keys = ["esc"], command = "hide_command_guide", description = "Close the command guide"},
+  { keys = ["f1"], command = "hide_command_guide", description = "Close the command guide"},
+]
+
+# The theme_selector key bindings are only usable when the theme selector popup is focused.
+# When the theme selector is focused, core_window bindings apply too (e.g. Alt+1/2/3).
+# Only list theme selector-specific bindings here.
+[theme_selector]
+keymap = [
+  # Close the theme selector popup
+  { keys = ["esc"], command = "hide_theme_selector", description = "Close the theme selector"},
+]
+
+# The search_overlay key bindings are only usable when the search overlay popup is focused.
+# When the search overlay is focused, core_window bindings apply too (e.g. Alt+1/2/3).
+# Only list search overlay-specific bindings here.
+[search_overlay]
+keymap = [
+  # Close the search overlay popup
+  { keys = ["esc"], command = "close_search_overlay", description = "Close the search overlay"},
+  # Submit search query (when no results) or confirm selection and jump (when results exist)
+  { keys = ["enter"], command = "search_overlay_submit", description = "Submit search or confirm selection"},
+]
+
+# The photo_viewer key bindings are only usable when the photo viewer popup is focused.
+# When the photo viewer is focused, core_window bindings apply too (e.g. Alt+1/2/3).
+# Only list photo viewer-specific bindings here.
+[photo_viewer]
+keymap = [
+  # Close the photo viewer popup
+  { keys = ["esc"], command = "hide_photo_viewer", description = "Close the photo viewer"},
+  # Navigate to previous/next message
+  { keys = ["up"], command = "photo_viewer_previous", description = "View previous message"},
+  { keys = ["down"], command = "photo_viewer_next", description = "View next message"},
+  { keys = ["k"], command = "photo_viewer_previous", description = "View previous message"},
+  { keys = ["j"], command = "photo_viewer_next", description = "View next message"},
+]
+
+[file_upload_explorer]
+keymap = [
+  # Close the file upload explorer popup
+  { keys = ["esc"], command = "hide_file_upload_explorer", description = "Close file upload explorer"},
+  { keys = ["q"], command = "hide_file_upload_explorer", description = "Close file upload explorer"},
+]
+
+[file_download_explorer]
+keymap = [
+  { keys = ["esc"], command = "hide_file_download_explorer", description = "Cancel save file"},
+]
+
+# Pinned messages popup (browse all pins in the open chat).
+[pinned_messages_popup]
+keymap = [
+  { keys = ["esc"], command = "hide_pinned_messages_popup", description = "Close pinned messages"},
+  { keys = ["enter"], command = "pinned_popup_confirm_jump", description = "Jump to this message in chat"},
+  { keys = ["up"], command = "pinned_popup_previous", description = "Older pinned message"},
+  { keys = ["down"], command = "pinned_popup_next", description = "Newer pinned message"},
+  { keys = ["k"], command = "pinned_popup_previous", description = "Older pinned message"},
+  { keys = ["j"], command = "pinned_popup_next", description = "Newer pinned message"},
+  { keys = ["alt+v"], command = "pinned_popup_view_photo", description = "View photo from current pin"},
+  { keys = ["alt+p"], command = "pinned_popup_play_voice", description = "Play voice/audio from current pin"},
+]
+
