@@ -22,6 +22,27 @@ hl.monitor({
     scale    = 2,
 })
 
+-- Game streaming (bastion-stream): an invisible output that Sunshine captures.
+-- Left of everything, because the "auto" monitors re-flow around anything to their right.
+-- bastion-stream sets the mode per session from what Moonlight asks for.
+hl.monitor({
+    output   = "STREAM",
+    mode     = "1920x1080@60",
+    position = "-10000x0",
+    scale    = 1,
+})
+hl.workspace_rule({
+    workspace   = "name:stream",
+    monitor     = "STREAM",
+    default     = true,
+    gaps_in     = 0,
+    gaps_out    = 0,
+    no_border   = true,
+    no_rounding = true,
+    no_shadow   = true,
+    decorate    = false,
+})
+
 
 ---------------------
 ---- MY PROGRAMS ----
@@ -334,6 +355,16 @@ local suppressMaximizeRule = hl.window_rule({
     suppress_event = "maximize",
 })
 -- suppressMaximizeRule:set_enabled(false)
+
+hl.window_rule({
+    -- Game streaming: bastion-stream's gamescope lives on the invisible STREAM output
+    name  = "stream-gamescope",
+    match = { class = "^gamescope$" },
+
+    workspace        = "name:stream silent",
+    fullscreen       = true,
+    no_initial_focus = true,
+})
 
 hl.window_rule({
     -- Fix some dragging issues with XWayland

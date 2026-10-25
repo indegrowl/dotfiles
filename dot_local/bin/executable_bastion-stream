@@ -1,0 +1,137 @@
+#!/bin/bash
+# Sunshine prep/undo for the "Steam Big Picture" app: Big Picture runs in a
+# gamescope on an invisible Hyprland output (STREAM) that Sunshine captures, while
+# the desktop and its monitors stay untouched.
+#   bastion-stream prep      swap the silent desktop Steam for gamescope on STREAM
+#   bastion-stream undo      put everything back (idempotent)
+# Sourcing with BASTION_STREAM_LIB=1 only defines the functions (tests).
+set -u
+
+STATE=${BASTION_STREAM_STATE:-${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/bastion-stream}
+STEAM_TIMEOUT=${BASTION_STREAM_STEAM_TIMEOUT:-30}
+OUTPUT=STREAM
+GAMESCOPE_UNIT=bastion-stream-gamescope
+INHIBIT_UNIT=bastion-stream-inhibit
+
+_hyprctl() { hyprctl "$@"; }
+_steam() { steam "$@" >/dev/null 2>&1; }
+_steam_running() { pgrep -x steam >/dev/null; }
+_systemd_run() { systemd-run "$@" >/dev/null 2>&1; }
+_systemctl() { systemctl "$@"; }
+_sleep() { sleep "$@"; }
+
+# Stream size and rate as Moonlight asked for them; 1080p60 when run by hand.
+stream_mode() {
+    echo "${SUNSHINE_CLIENT_WIDTH:-1920} ${SUNSHINE_CLIENT_HEIGHT:-1080} ${SUNSHINE_CLIENT_FPS:-60}"
+}
+
+# Negative position: DP-3 is placed "auto", so anything to its right pushes it over.
+create_output() {
+    _hyprctl eval "hl.monitor({output = \"$OUTPUT\", mode = \"$1x$2@$3\", position = \"-10000x0\", scale = 1})" >/dev/null &&
+        _hyprctl output create headless "$OUTPUT" >/dev/null
+}
+
+remove_output() {
+    if _hyprctl monitors | grep -q "^Monitor $OUTPUT "; then
+        _hyprctl output remove "$OUTPUT" >/dev/null
+    fi
+    return 0
+}
+
+wait_steam_gone() {
+    local i
+    for ((i = 0; i < STEAM_TIMEOUT; i++)); do
+        _steam_running || return 0
+        _sleep 1
+    done
+    ! _steam_running
+}
+
+stop_desktop_steam() {
+    if _steam_running; then
+        _steam -shutdown
+        wait_steam_gone || { echo "bastion-stream: Steam did not shut down in ${STEAM_TIMEOUT}s" >&2; return 1; }
+    fi
+    # A desktop Steam that undo started may still be in its wrapper, before any
+    # steam process exists; it would collide with the one in gamescope.
+    if _systemctl --user is-active -q bastion-desktop-steam; then
+        _systemctl --user stop bastion-desktop-steam
+    fi
+    return 0
+}
+
+start_desktop_steam() {
+    _steam_running && return 0
+    _systemd_run --user --unit=bastion-desktop-steam --collect --slice=app.slice -- bazzite-steam -silent
+}
+
+gamescope_active() { _systemctl --user is-active -q "$GAMESCOPE_UNIT"; }
+
+# Up means its window is mapped in Hyprland (the window rule puts it on STREAM).
+start_gamescope() {
+    local i
+    _systemd_run --user --unit="$GAMESCOPE_UNIT" --collect -- \
+        gamescope -e -W "$1" -H "$2" -w "$1" -h "$2" -r "$3" -f -- steam -gamepadui || return 1
+    for ((i = 0; i < 30; i++)); do
+        _hyprctl clients -j | grep -q '"class": "gamescope"' && return 0
+        gamescope_active || break
+        _sleep 1
+    done
+    echo "bastion-stream: gamescope did not come up" >&2
+    return 1
+}
+
+# Steam first, so it saves its state; gamescope exits with it.
+stop_gamescope() {
+    gamescope_active || return 0
+    _steam -shutdown
+    wait_steam_gone
+    if gamescope_active; then
+        _systemctl --user stop "$GAMESCOPE_UNIT"
+    fi
+    return 0
+}
+
+start_inhibit() {
+    _systemd_run --user --unit="$INHIBIT_UNIT" --collect -- \
+        systemd-inhibit --what=idle:sleep --who=bastion-stream --why=streaming sleep infinity
+}
+
+stop_inhibit() {
+    _systemctl --user stop "$INHIBIT_UNIT" >/dev/null 2>&1
+    return 0
+}
+
+prep() {
+    local w h fps
+    mkdir -p "$STATE"
+    if [ -e "$STATE/session" ]; then
+        gamescope_active && return 0
+        undo
+    fi
+    read -r w h fps < <(stream_mode)
+    touch "$STATE/session"
+    if stop_desktop_steam && create_output "$w" "$h" "$fps" && start_inhibit &&
+        start_gamescope "$w" "$h" "$fps"; then
+        return 0
+    fi
+    undo
+    return 1
+}
+
+undo() {
+    [ -e "$STATE/session" ] || gamescope_active || return 0
+    stop_gamescope
+    remove_output
+    stop_inhibit
+    start_desktop_steam
+    rm -f "$STATE/session"
+    return 0
+}
+
+[ -n "${BASTION_STREAM_LIB:-}" ] && return 0
+
+case "${1:-}" in
+    prep | undo) "$1" ;;
+    *) echo "usage: bastion-stream prep|undo" >&2; exit 2 ;;
+esac
