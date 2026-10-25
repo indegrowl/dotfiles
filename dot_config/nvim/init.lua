@@ -1,0 +1,1 @@
+-- Neovim config. Empty = built-in defaults. See :help lua-guide
