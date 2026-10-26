@@ -377,6 +377,22 @@ hl.window_rule({
 })
 
 hl.window_rule({
+    -- KDE's xwaylandvideobridge (autostarted from /etc/xdg/autostart) maps a real
+    -- window outside Plasma; keep it running for X11 screenshare but invisible
+    name  = "hide-xwaylandvideobridge",
+    match = { class = "^xwaylandvideobridge$" },
+
+    float            = true,
+    opacity          = "0.0 override",
+    no_anim          = true,
+    no_initial_focus = true,
+    max_size         = "1 1",
+    move             = "monitor_w monitor_h",
+    no_blur          = true,
+    no_focus         = true,
+})
+
+hl.window_rule({
     -- Fix some dragging issues with XWayland
     name  = "fix-xwayland-drags",
     match = {
